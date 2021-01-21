@@ -9,9 +9,33 @@
 // USE: Always start with #define, then the name of the constant (MAX.../MIN...) and lastly the value. It can be a int,
 // a char, a string... whatever you want. Remember to always write it on capital letters, and separated by underscore.
 #define MAX_CHAR 100
+#define MAX_PASSENGERS 5
 #define PI 3.14
 #define MY_NAME "John"
 #define MY_SURNAME "Doe"
+
+// STRUCTURE: Third is the global variables. This variables are available to use in all this file. It is not a good practice to use
+// them, as different functions can modify it, it can end up generating errors. It is better to use local variables, which
+// are the ones created inside procedures and functions, and then return them (like when a function returns an int).
+int globalVariableInt = 2;
+
+// STRUCTURE: The last thing before starting to declare functions, is to define your structs. The struct is like creating your own int,
+// creating your own type. This type will be composed of other variables.
+
+// This struct is used later in the Car struct, but to be used it must be declared before the car struct.
+// It contains information about the passenger: passengerName (a string, of maximum 100 chars) and the passengerAge (an int)
+struct CarPassenger {
+    char passengerName[MAX_CHAR];
+    int passengerAge;
+};
+
+// This struct represents a Car, that contains the amount of passengers currently in the car (int numberPassengers)
+// and an array of struct CarPassenger. This is an array of 5 positions, which means that the car can only have 5 passengers.
+// Is an array of struct CarPassenger, which has been declared earlier.
+struct Car {
+    int numberPassengers;
+    struct CarPassenger passengers[MAX_PASSENGERS];
+};
 
 void printSeparator() {
     printf("\n--------------------------------------------------------------------------------------------\n");
@@ -187,8 +211,8 @@ int main() {
         case 4:
             break;
         default:                // This is a special case. Its like the else. If there is no case that matches the value of selectedOption
-                                // for example a 5, it will go to the default. In this case it will never be used, as in the printMenu() function
-                                // we are always making sure that the value will be 1,2,3 or 4
+            // for example a 5, it will go to the default. In this case it will never be used, as in the printMenu() function
+            // we are always making sure that the value will be 1,2,3 or 4
             break;
     }
 
