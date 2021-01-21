@@ -103,35 +103,94 @@ void printNumbers() {
     printSeparator();
 }
 
+// This is a function, as it starts with an int. This allows us to return an int value to the function from where readNumbers() is called.
+// To do so, at the end of the function we must do "return X" where X is the value or variable that we want to return
 int readNumbers() {
     printf("INSIDE PROCEDURE readNumbers()\n");
 
     // To read numbers is as simple as printing them
     int testInt = 0;                            // It is a good practice to always initialize the variables to something
-                                                // In the case of numbers such as ints, to 0
+    // In the case of numbers such as ints, to 0
     printf("Insert a new int: \n");
-    scanf("%d",&testInt);               // We use the %d to read and print int values
+    scanf("%d", &testInt);               // We use the %d to read and print int values
     printf("The int you inserted was: %d\n", testInt);
 
-    float testFloat=0;
+    float testFloat = 0;
     printf("Insert a new float (ex: 3.2): \n");
-    scanf("%f",&testFloat);               // We use the %f to read and print float values
+    scanf("%f", &testFloat);               // We use the %f to read and print float values
     printf("The float you inserted was: %.2f\n", testFloat);        // Print with %.2f to only show 2 decimals
 
     printSeparator();
+
+    return testInt;     // Return the int we read in the first scanf, to the place this functions is being called from.
+    // Once a return is done, the function ends. If a printf is after the return, as after the return the
+    // function ends, the printf will never be called.
+
+    printf("This will never be printed, because of the previous return!");
 }
+
+// This is a function, as it returns an int
+int printMenu() {
+    // Usually all the computer programs need a menu to be navigated with. This is a basic implementation of a menu,
+    // which will ask for a correct option. If the option inserted does not exist, it will ask to insert the option again
+    printf("INSIDE PROCEDURE printMenu()\n");
+
+    int selectedOption = 0;                 // Declare the variable where the option is stored.
+
+    printf("-- Welcome to the MENU --\n");      // Print the menu options
+    printf("\t 1. Strings\n");
+    printf("\t 2. Numbers\n");
+    printf("\t 3. Arrays\n");
+    printf("\t 4. Structs\n");
+    printf("Select a tutorial: \n");
+
+    scanf("%d", &selectedOption);               // Save the option in selectedOption int variable
+
+    while (0 >= selectedOption || selectedOption > 4) { // Check that the option is somewhere between 0 and 5 (1,2,3,4)
+        printf("Wrong Option. Please, select a option number between 1 and 4.\n\n");
+
+        printf("\t 1. Strings\n");
+        printf("\t 2. Numbers\n");
+        printf("\t 3. Arrays\n");
+        printf("\t 4. Structs\n");
+        printf("Select a tutorial: \n");
+
+        scanf("%d", &selectedOption);          // Store the new value to the variable
+    }
+
+    return selectedOption;                          // Return the variable, knowing that will be between 1 and 4
+}
+
 
 // If returns something different than "void" --> Function
 // If returns "void" --> Procedure == Does not return nothing, so the function does not have the return clause at the end.
 int main() {
 
-    // Strings
-    //printString();
-    //readString();
+    int selectedOption = printMenu();           // Save the option in the variable
 
-    // Numbers
-    printNumbers();
-    readNumbers();
+    // The switch works like and if/else. It will check if selectedOption == 1, == 2... the number is set in the "case".
+    // A switch can also be used with chars or strings, does not always have to be with integers.
+    switch (selectedOption) {
+        case 1:
+            // Strings
+            printString();
+            readString();
+            break;
+        case 2:
+            // Numbers
+            printNumbers();
+            int value = readNumbers();      // This is a function that returns an int. If we want to save it we can store its value in a variable.
+            printf("The function readNumbers() has returned the value: %d", value);
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        default:                // This is a special case. Its like the else. If there is no case that matches the value of selectedOption
+                                // for example a 5, it will go to the default. In this case it will never be used, as in the printMenu() function
+                                // we are always making sure that the value will be 1,2,3 or 4
+            break;
+    }
 
     return 0;
 }
