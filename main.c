@@ -36,6 +36,7 @@ struct CarPassenger {
 // Is an array of struct CarPassenger, which has been declared earlier.
 struct Car {
     int numberPassengers;
+    float gasLeft;
     struct CarPassenger passengers[MAX_PASSENGERS];
 };
 
@@ -138,16 +139,15 @@ void strtokOperations() {
 
     char *token;                                                        // This is the variable where the separated strings will be stored.
 
-    token = strtok(str,
-                   delimiter);                                          // The first time the strtok is run, the first part of the string till the delimiter - will be returned
+    token = strtok(str,delimiter);                                      // The first time the strtok is run, the first part of the string till the delimiter - will be returned
     // In this first case, we would get the "This is "
 
     // For this example, we will do a while, that will print the token till there are no more tokens (string parts) to show
     while (token != NULL) {
         printf(" %s\n", token);
 
-        token = strtok(NULL,
-                       delimiter);  // We get the next token (first "cCheatsheet", and in the second loop " tutorial)
+        token = strtok(NULL, delimiter);  // We get the next token (first "cCheatsheet", and in the second loop " tutorial)
+        // IMPORTANT: We only put the string the first time. After, to get the next value, instead of the string we put NULL
     }
 }
 
@@ -281,6 +281,7 @@ void sortIntArray() {
     printSeparator();
 }
 
+// Function that receives a string and returns an float
 float myAtof(char *string) {
     float total = 0, num;
     int df = 10, i = 0;
@@ -304,25 +305,22 @@ float myAtof(char *string) {
     return total;
 }
 
+// Function that receives a string and returns an int
 int myAtoi(char *string) {
-    // Initialize result
-    int res = 0;
+    int res = 0;            // Initialize result variable
 
-    // Iterate through all characters
-    // of input string and update result
-    // take ASCII character of corosponding digit and
-    // subtract the code from '0' to get numerical
-    // value and multiply res by 10 to shuffle
-    // digits left to update running total
+    // Iterate through all characters of input string and update result take ASCII
+    // character of corresponding digit and subtract the code from '0' to get numerical
+    // value and multiply res by 10 to shuffle digits left to update running total
     for (int i = 0; string[i] != '\0' && string[i] != '\n'; ++i) {
         res = res * 10 + string[i] - '0';
     }
-    // return result.
-    return res;
+
+    return res;             // return result.
 }
 
 void printCar(struct Car car) {
-    printf("This car has %d passengers\n", car.numberPassengers);
+    printf("This car has %d passengers and %.2f gas left.\n", car.numberPassengers, car.gasLeft);
     for (int i = 0; i < car.numberPassengers; ++i) {
         printf("Passenger %d:\n\tName: %s\n\tAge: %d\n", i + 1, car.passengers[i].passengerName, car.passengers[i].passengerAge);
     }
@@ -331,8 +329,8 @@ void printCar(struct Car car) {
 void structExample() {
     printf("INSIDE PROCEDURE structExample()\n");
 
-    printf("Please, insert a string like numberPassengers#passenger1Name#passenger1Age#passenger2Name#passenger2Age#... \n");
-    printf("Example: 4#John Doe#44#Yerar Dogg#10#Willy Papa#27#Chop Bolson#5 \n");
+    printf("Please, insert a string like gasLeft#numberPassengers#passenger1Name#passenger1Age#passenger2Name#passenger2Age#... \n");
+    printf("Example: 20.5#4#John Doe#44#Yerar Dogg#10#Willy Papa#27#Chop Bolson#5 \n");
 
 
     char input[MAX_CHAR];                                       // Variable where the input string will be saved
@@ -353,7 +351,10 @@ void structExample() {
     // The first info given, is the amount of passengers the car will have, that must be saved in Car->numberPassengers
     struct Car car;
 
-    token = strtok(input, delimiter);                           // In the token we now have the number of passengers, but as a string
+    token = strtok(input, delimiter);                           // In the token we now have the gas left, but as a string
+    car.gasLeft = myAtof(token);                                // To save it we need the number as an float, so we use the myAtof function to transform it
+
+    token = strtok(NULL, delimiter);                        // In the token we now have the number of passengers, but as a string
     car.numberPassengers = myAtoi(token);                       // To save it we need the number as an int, so we use the myAtoi function to transform it
 
     // Now that we know how many passengers will be introduced, we can do a for loop to save as many information as passengers will be
@@ -363,10 +364,9 @@ void structExample() {
         strcpy(car.passengers[i].passengerName, token);
         token = strtok(NULL, delimiter);                    // We get the next token --> passengerAge
         car.passengers[i].passengerAge = myAtoi(token);         // As we need a int, we transform the string to int
-
     }
 
-    printCar(car);
+    printCar(car);                                              // Once all the information is saved, we print the car variable, to check its been correctly saved
 
     printSeparator();
 }
