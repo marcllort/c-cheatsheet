@@ -2,7 +2,7 @@
 // Created by mac12 on 22/01/2021.
 //
 
-#include "exercise.h"
+#include "exercise.h"       // All the imports and structures are created in the .h file. This is considered to be the best practice.
 
 // This is a function, as it returns an int
 int printMenu() {
@@ -94,7 +94,7 @@ struct Users exercise1(struct Users usersArray) {
 
     // 4rd: Save in structure, and print User
     token = strtok(input, " ");
-    strcpy(usersArray.users[usersArray.numberUsers].name, token);
+    strcpy(usersArray.users[usersArray.numberUsers].name, token);       // We copy from the token to the user.name
 
     token = strtok(NULL, " ");
     strcpy(usersArray.users[usersArray.numberUsers].surname1, token);
@@ -120,27 +120,31 @@ void exercise2(struct Users usersArray) {
     }
 }
 
-struct Users deleteUser(struct Users usersArray, int i) {
-    struct Users result;
+struct Users deleteUser(struct Users usersArray, int positionUser) {
 
-    usersArray.users[i].name[0] = '\0';
-    usersArray.users[i].surname1[0] = '\0';
-    usersArray.users[i].surname2[0] = '\0';
-    usersArray.users[i].age = 0;
+    for (int j = positionUser; j < usersArray.numberUsers; ++j) {
+        usersArray.users[j] = usersArray.users[j + 1];                  // We are shifting the users that are behind the one to be deleted
+        // Example: If there was a user after the one deleted (pos 0), now instead of being in position 1, now it will be in position 0
+    }
 
-    usersArray.numberUsers--;
+    usersArray.users[usersArray.numberUsers].name[0] = '\0';            // The last position, is cleaned, putting the firt char as \0, so in case we do a print it will be empty text
+    usersArray.users[usersArray.numberUsers].surname1[0] = '\0';
+    usersArray.users[usersArray.numberUsers].surname2[0] = '\0';
+    usersArray.users[usersArray.numberUsers].age = 0;
 
-    return result;
+    usersArray.numberUsers--;                                           // Reduce the amount of total users in the array
+
+    return usersArray;
 }
 
 struct Users exercise3(struct Users usersArray) {
     char name[MAX_CHAR];
     char option;
     printf("Name of the user to search:\n");
-    scanf("%s", name);
+    scanf("%s", name);                                          // In this case, as the name can't have spaces, we can use a scanf
 
     for (int i = 0; i < usersArray.numberUsers; ++i) {
-        if (strcmp(usersArray.users[i].name, name) == 0) {
+        if (strcmp(usersArray.users[i].name, name) == 0) {              // We use strcmp(strings.h), to compare if the names are the same. When they are the same, it returns a 0
             printf("User exists! Information:\n");
             printUser(usersArray.users[i]);
             printf("Do you want to delete this user? (Y/N)\n");
@@ -149,17 +153,17 @@ struct Users exercise3(struct Users usersArray) {
             if (option == 'Y' || option == 'y') {
                 printf("User with name %s deleted!", usersArray.users[i].name);
                 usersArray = deleteUser(usersArray, i);
-                break;
+                return usersArray;          // Return the updated array, with the deleted user and reduced number of users
             }
         }
     }
 
-    return usersArray;
+    return usersArray;          // Return the updated array, with the deleted user and reduced number of users
 }
 
 
-struct Users exercise4(struct Users usersArray) {
-
+void exercise4() {
+    printf("Nothing to show!\n");
 }
 
 // If returns something different than "void" --> Function
@@ -184,7 +188,7 @@ int main() {
                 usersArray = exercise3(usersArray);
                 break;
             case 4:
-                exercise4(usersArray);
+                exercise4();
                 break;
             default:                // This is a special case. Its like the else. If there is no case that matches the value of selectedOption
                 // for example a 5, it will go to the default. In this case it will never be used, as in the printMenu() function
@@ -194,7 +198,5 @@ int main() {
         selectedOption = printMenu();           // Save the option in the variable
     }
 
-
     return 0;
-
 }
