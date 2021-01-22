@@ -3,6 +3,8 @@
 // If the library is one included in C (already coded) like "strings.h" you will use <> --> #include <strings.h>
 // If the library has been coded by you, like "test.h" you will use "" --> #include "test.h"
 #include <stdio.h>  // stdio.h --> Always present. It has the functions of printf, scanf... all the basics.
+#include <strings.h> // strings.h --> Must be used when we need functions like strlen, strok... In general string related functions
+#include <math.h>   // math.h --> Used for advanced operations, like rounding numbers, sqrt (raiz cuadrada)
 
 // STRUCTURE: Second you have to do the define of the macros/constants of your project. All those variables, that don't need
 // to be changed during the execution of the program, in general, can be defined as a macro.
@@ -104,6 +106,53 @@ void readString() {
     printSeparator();   // This procedure is called to print a separator line, between lines. Not necessary, just looks good.
 }
 
+// This is a procedure, as it is returning a void. But in this case we are receiving a parameter, a string.
+void strlenOperations(char *testVariable) {
+    printf("INSIDE PROCEDURE strlenOperations()\n");
+
+    printf("String Parameter received: %s\n",
+           testVariable); // Print the string received, to check that its been received properly
+
+    int stringLength = strlen(testVariable); // We use the strlen, to detect what is the lenght of the string received.
+    printf("The string: %s, has a length of %d\n", testVariable, stringLength);
+
+    printSeparator();
+
+    char testChars[MAX_CHAR] = "second test";
+    printf("The original string testChars is: %s\n", testChars);
+
+    testChars[4] = 'F';                    // Try modifying only the 5th (as arrays start by 0) position of the array, and put a F in there
+    printf("The modified string testChars is: %s\n", testChars);
+    printf("The modified string: %s, has a length of %d\n", testChars,
+           strlen(testChars));// Instead of saving the strlen value in a variable
+    // It can also be directly put as a parameter in the printf, as it returns an int
+
+    testChars[6] = '\0';              // Now we will cut the string. This will make that printf will only print till position 6, and strlen
+    // will count letters till the 6th position too.
+    printf("The reduced string: %s, has a length of %d\n", testChars,
+           strlen(testChars));
+
+    printSeparator();
+}
+
+void strtokOperations() {
+    char str[MAX_CHAR] = "This is - cCheatsheet - tutorial";       // This is the initial string that we will want to separate
+    const char s[2] = "-";                                          // The string has a two -, and this will be the delimiter that we will use to cut
+
+    char *token;                           // This is the variable where the separated strings will be stored.
+
+    token = strtok(str,
+                   s);                     // The first time the strtok is run, the first part of the string till the delimiter - will be returned
+    // In this first case, we would get the "This is "
+
+    // For this example, we will do a while, that will print the token till there are no more tokens (string parts) to show
+    while (token != NULL) {
+        printf(" %s\n", token);
+
+        token = strtok(NULL, s);  // We get the next token (first "cCheatsheet", and in the second loop " tutorial)
+    }
+}
+
 void printNumbers() {
     printf("INSIDE PROCEDURE printNumbers()\n");
 
@@ -185,6 +234,57 @@ int printMenu() {
     return selectedOption;                          // Return the variable, knowing that will be between 1 and 4
 }
 
+void selectionSort(int arr[], int n) {
+    int i, j, min_idx;
+
+    // One by one move boundary of unsorted subarray
+    for (i = 0; i < n - 1; i++) {
+
+        // Find the minimum element in unsorted array
+        min_idx = i;
+        for (j = i + 1; j < n; j++) {       // We look for the smallest number in the rest of the array
+            if (arr[j] < arr[min_idx]) {
+                min_idx = j;                // If the number in the J position is smaller than the current smallest number
+                // we update the min_idx var, to save the position of the smallest number
+            }
+        }
+
+        // Swap the found minimum element
+        // with the first element
+        int temp = arr[i];                  // We use a temporal variable, to store the original value of position i
+        arr[i] = arr[min_idx];              // If we don't do the previous step, as we are now overriding the position i
+        arr[min_idx] = temp;                // the old value that was in i (now stored in temp) would be lost
+    }
+}
+
+// Procedure to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);  // Print position i of the array
+    }
+    printf("\n");
+}
+
+void sortIntArray() {
+    printf("INSIDE PROCEDURE sortIntArray()\n");
+
+    int arr[] = {0, 23, 14, 12, 9};     // Original array to order
+
+    int n = sizeof(arr) /
+            sizeof(arr[0]);       // To know the length of the array, instead of manually counting we can do this division
+    // We divide the sizeof the array, by the size of one position of the array, to get how many positions are inside
+    printf("Original array: \n");
+    printArray(arr, n);
+
+    selectionSort(arr,
+                  n);                      // The array and its length is given to the sort array procedure. An array is passed by reference
+    // which means that once inside the selectionSort procedure is reordered, it does not need to be returned and saved in
+    // a new array variable, the original "arr" variable will already have the changes in it.
+    printf("\nSorted array in Ascending order: \n");
+    printArray(arr, n);
+
+    printSeparator();
+}
 
 // If returns something different than "void" --> Function
 // If returns "void" --> Procedure == Does not return nothing, so the function does not have the return clause at the end.
@@ -197,8 +297,10 @@ int main() {
     switch (selectedOption) {
         case 1:
             // Strings
-            printString();
-            readString();
+            //printString();
+            //readString();
+            strlenOperations("test string");
+            strtokOperations();
             break;
         case 2:
             // Numbers
@@ -207,6 +309,8 @@ int main() {
             printf("The function readNumbers() has returned the value: %d", value);
             break;
         case 3:
+            // Arrays
+            sortIntArray();
             break;
         case 4:
             break;
